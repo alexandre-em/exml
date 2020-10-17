@@ -73,7 +73,7 @@ let creer_binaire op e1 e2 =
 
 let somme_r = plus_r
 
-let env_reduction = ref [ ("somme",(somme_r,(Entier 0:resultat))) ]
+let env_reduction = ref [ ("sum",(Tableur.addres,(Entier 0:resultat))) ]
 
 let creer_reduction op i1 i2 i3 i4 =
   let (app_r: resultat -> resultat -> resultat),(acc: resultat) = List.assoc op !env_reduction in
@@ -98,7 +98,7 @@ and suite_expr e1 s = match s with parser
 
 and args op  s = match s with parser
   [< 'Ident id1 ; 'Kwd "," ; 'Int i2 ; 'Kwd "," ; 'Ident id3 ; 'Kwd "," ; 'Int i4 >] ->
-     creer_reduction op (to_int id1) i2 (to_int id3) i4
+     creer_reduction op ((to_int id1)-1) (i2-1) ((to_int id3)-1) (i4-1)
 | [< e1 = expr ; e2 = suite_args op e1  >] -> e2
 
 and suite_args op e1  s = match s with parser

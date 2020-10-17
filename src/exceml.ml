@@ -8,11 +8,11 @@ type cell_infos = {
   inp : Dom.input;
   txt : Dom.txt;
   mutable result : Tableur.resultat;
-  mutable parent_deps : (int * int) list;
-  mutable child_deps : (int * int) list;
+  (* mutable parent_deps : (int * int) list;
+  mutable child_deps : (int * int) list; *)
 }
 
-let direct_deps expr =
+(* let direct_deps expr =
   let rec aux expr =
     let open Tableur in
     match expr with
@@ -28,7 +28,7 @@ let direct_deps expr =
         List.fold_left (fun set c -> CaseSet.add c set) CaseSet.empty
         @@ coords_of_plage case_debut case_fin
   in
-  Tableur.CaseSet.elements (aux expr)
+  Tableur.CaseSet.elements (aux expr) *)
 
 type grid = Tableur.expr array array
 
@@ -36,14 +36,14 @@ type infos_grid = cell_infos array array
 
 let mk_cell ?(inp = Dom.Create.input ()) ?(container = Dom.Create.div ())
     ?(txt = Dom.Create.txt " ") ?(result = (Tableur.Vide: Tableur.resultat)) ?(parent_deps = []) ?(child_deps = []) () =
-  {inp; container; txt; result; parent_deps; child_deps}
+  {inp; container; txt; result(*; parent_deps; child_deps*)}
 
 let error_to_string e =
    match e with
       | Tableur.Cycle_detecte -> "#CYCLE"
       | Tableur.Mauvais_indice(i,j) -> "#IND("^(string_of_int i)^","^(string_of_int j)^")"
       | Tableur.Divzero(s) -> "#DIV_BY_0"
-      | Tableur.Mauvais_argument(s) -> "#ARG"^s
+      | Tableur.Mauvais_argument(s) -> "#ARG "^s
 
 let resultat_to_string r =
   match r with
@@ -63,20 +63,20 @@ let update_display infos_grid i j r =
     Dom.Class.add cell.inp "cell-error"
   | _ -> Dom.Class.remove cell.inp "cell-error"
 
-let update_deps infos_grid i j expr =
+(* let update_deps infos_grid i j expr =
   let parent = (direct_deps expr) in
   infos_grid.(i).(j).parent_deps <- parent;
   for i = 0 to (List.length parent)-1 do
     match (List.nth parent i) with
     | (k,l) -> infos_grid.(k).(l).child_deps <- (i,j)::infos_grid.(k).(l).child_deps;
-  done
+  done *)
 
-let propagate grid infos_grid i j = (* TODO *)
+(* let propagate grid infos_grid i j = (* TODO *)
   let child= infos_grid.(i).(j).child_deps in
   for k=0 to (List.length child)-1 do
     match (List.nth child k) with
     | (a,b) -> update_display infos_grid a b infos_grid.(i).(j).result
-  done
+  done *)
 
 let grid_to_string grid infos_grid =
   let s = ref "" in
@@ -116,13 +116,13 @@ let update i j grid infos_grid =
     (match expr with
        Ok(a) -> grid.(i).(j) <- a;
        let res = try (Tableur.eval_grille grid).(i).(j) with Division_by_zero -> Erreur(Tableur.Divzero "div0") in
-       update_deps infos_grid i j a;
+       (* update_deps infos_grid i j a; *)
        update_display infos_grid i j res
      | Error(e) -> Dom.Text.set_content infos_grid.(i).(j).txt "#ERROR"));
   let res = try (Tableur.eval_grille grid).(i).(j) with Division_by_zero -> Erreur(Tableur.Divzero "div0") in
     infos_grid.(i).(j).result <- res;
     update_display infos_grid i j res;
-    propagate grid infos_grid i j;
+    (* propagate grid infos_grid i j; *)
     Storage.set (grid_to_string grid infos_grid)
 
 let add_cell_events i j grid infos_grid =
@@ -173,14 +173,14 @@ let load_storage grid infos_grid =
           in
           (match expr with
              Ok(a) -> grid.(i).(j) <- a;
-             update_deps infos_grid i j a
+             (* update_deps infos_grid i j a *)
            | Error(e) -> Dom.Text.set_content infos_grid.(i).(j).txt e);
           update i j grid infos_grid
     done
 
 let main () =
-  let height = 10 in
-  let width = 10 in
+  let height = 40 in
+  let width = 20 in
   let (grid, infos_grid) = load_grids height width in
   let () = load_storage grid infos_grid in
   Array.iteri
@@ -188,5 +188,5 @@ let main () =
     grid
 
 let () =
-  (*Storage.clean_all ();*)
+  (* Storage.clean_all (); *)
   Init.onload main

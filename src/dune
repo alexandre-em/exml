@@ -27,3 +27,14 @@
  (modules exceml)
  (modes js)
 )
+
+(executable
+ (name test_tableur)
+ (libraries tableur)
+ (modules test_tableur)
+ (flags (:standard))
+)
+
+(rule
+ (target tests.ml)
+ (action (run %{exe:test_tableur.exe})))

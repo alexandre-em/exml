@@ -263,14 +263,11 @@ let addres (op1: resultat) (op2: resultat) =
   match op1,op2 with
   | Entier(x), Entier(y) -> (Entier(x+y):resultat)
   | Flottant(x), Flottant(y) -> (Flottant(x +. y):resultat)
-  | Chaine(x), Chaine(y) -> (Chaine(x^y):resultat)
   | Entier(n),Vide -> (Entier(n):resultat)
-  | Chaine(x),Vide -> (Chaine(x):resultat)
   | Flottant(f),Vide -> (Flottant(f):resultat)
   | Vide, Entier(n) -> (Entier(n):resultat)
   | Vide, Flottant(f) -> (Flottant(f):resultat)
-  | Vide, Chaine(x) -> (Chaine(x):resultat)
-  | Vide,Vide -> (Vide:resultat)
+  | Vide,Vide -> (Entier(0):resultat)
   | _ -> Erreur(Mauvais_argument "Valeurs Incompatibles")
 
 
@@ -285,7 +282,7 @@ let oppose_expr (op:resultat) =
   match op with
   | Flottant(x) -> (Flottant(x *. -1.0):resultat)
   | Entier(x) -> (Entier(x * -1):resultat)
-  | _ -> Erreur(Mauvais_argument "Non applicable")
+  | _ -> Erreur(Mauvais_argument "Non applicable opp")
 
 let oppose (op: expr) =
   (Unaire({app1=oppose_expr;operande=op}))
@@ -294,7 +291,7 @@ let inv_expr (op:resultat) =
   match op with
   | Flottant(x) -> (Flottant(1.0 /. x):resultat)
   | Entier(x) -> (Entier(1 / x):resultat)
-  | _ -> Erreur(Mauvais_argument "Non applicable")
+  | _ -> Erreur(Mauvais_argument "Non applicable inv")
 
 let inv (op: expr) =
   (Unaire({app1=inv_expr;operande=op}))

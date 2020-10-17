@@ -127,16 +127,18 @@ let testmax () =
 
 let run_tests () =
   let liste_tests =
-    [("création grille", test1); ("affectation grille", test2); ("Possede un cycle?", test3); ("Valeur Absolue", testabs) ;("Addition d'expr", testadd) ;("Reduction sur chaine", test4); ("Somme expression", test5); ("Calcul oppose", testoppo); ("Calcul inverse", testinv); ("Calcul Multip", testmul); ("Calcul division", testdiv); ("Min reduction", testmin); ("Max reduction", testmax)]
+    [("création grille", test1); ("affectation grille", test2); ("Possede un cycle?", test3); ("Valeur Absolue", testabs) ;("Addition d'expr", testadd) ; ("Somme expression", test5); ("Calcul oppose", testoppo); ("Calcul inverse", testinv); ("Calcul Multip", testmul); ("Calcul division", testdiv); ("Min reduction", testmin); ("Max reduction", testmax)]
   in
   List.iteri
     (fun i (nom_test, f_test) ->
       Format.printf "Test #%d - %s:\t" (i + 1) nom_test ;
-      try
+      (* try *)
         f_test () ;
         Format.printf "\027[32mOk\n\027[39m"
-      with exn ->
-        Format.printf "\027[31mErreur - %s\n\027[39m" (Printexc.to_string exn))
+      (* with exn ->
+        raise 
+        Format.printf "\027[31mErreur - %s\n\027[39m" (Printexc.to_string exn) *)
+        )
     liste_tests
 
 (* Main *)
